@@ -3,6 +3,7 @@
 input/
 token.json
 credentials.json
+tmp/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

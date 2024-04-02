@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  audio_pdf_server:
+    image: fbellame/audio_to_pdf:1.0
+    command: ["server.py", "--server.headless", "true", "--server.fileWatcherType", "none", "--browser.gatherUsageStats", "false"]
+    volumes:
+      - /media/farid/data/projects/audio_to_pdf/tmp:/data
+    environment:
+      - OPENAI_API_KEY=
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    stdin_open: true
+    tty: true
+    networks:
+      - web
+
+  cloudflared_ft:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate run --token 
+    depends_on:
+      - audio_pdf_server
+    networks:
+      - web
+
+networks:
+  web:
+    external: false

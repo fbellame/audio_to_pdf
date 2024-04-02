@@ -35,3 +35,21 @@ def get_service():
 
     return service
 
+def get_folder_id_by_name(service, folder_name):
+    """
+    Searches for a folder by name and returns its ID.
+
+    :param service: Authenticated Google Drive service instance.
+    :param folder_name: Name of the folder to find.
+    :return: ID of the found folder or None if not found.
+    """
+    query = f"mimeType='application/vnd.google-apps.folder' and name='{folder_name}' and trashed=false"
+    response = service.files().list(q=query, spaces='drive', fields='files(id, name)').execute()
+    folders = response.get('files', [])
+    
+    if folders:
+        return folders[0].get('id')
+    else:
+        print(f"Folder '{folder_name}' not found.")
+        return None
+
